@@ -3,11 +3,11 @@ version: '3.8'
 services:
   web:
     build: ./app
-    command: python manage.py runserver 0.0.0.0:8000
+    command: python manage.py runserver 0.0.0.0:8080
     volumes:
       - ./app/:/usr/src/app/
     ports:
-      - 8000:8000
+      - 8080:8080
     environment:
       - DEBUG=1
       - SECRET_KEY=foo
@@ -20,6 +20,8 @@ services:
       - DATABASE=postgres
     depends_on:
       - db
+    networks:
+      - nginxproxymanager_default
   db:
     image: postgres:13-alpine
     volumes:
@@ -28,6 +30,11 @@ services:
       - POSTGRES_USER=hello_django
       - POSTGRES_PASSWORD=hello_django
       - POSTGRES_DB=hello_django_dev
+    networks:
+      - nginxproxymanager_default
 
 volumes:
   postgres_data:
+networks:
+  nginxproxymanager_default:
+    external: true
